@@ -1,0 +1,14 @@
+{
+  "name": "abhisanoujam_meitei_mayek",
+  "version": "0.0.1",
+  "description": "Library for Meitei Mayek",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhi Sanoujam",
+  "license": "ISC",
+  "dependencies": {
+    "expect": "^29.7.0"
+  }
+}

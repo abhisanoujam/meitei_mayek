@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transliteration Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+    .author-subheader {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<script>
+
+    class Transliteration {
+      constructor() {}
+
+      transliterate(text) {
+        return text;
+      }
+    }
+
+</script>
+<div class="container">
+    <h1>Transliteration Tool</h1>
+    <p class="author-subheader">Author: Abhi Sanoujam</p>
+    <div class="row">
+        <div class="col s12">
+            <div class="input-field">
+                <textarea id="inputText" placeholder="Enter text to transliterate" rows="20"></textarea>
+                <label for="inputText">Text</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 center-align">
+            <button class="btn waves-effect waves-light" id="transliterateBtn">Transliterate <i class="material-icons right">send</i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <div class="input-field">
+                <textarea id="outputText" placeholder="Transliterated Text" disabled rows="20"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function() {
+      $('#transliterateBtn').click(function() {
+        const inputText = $('#inputText').val();
+        const transliteration = new Transliteration();
+        const transliteratedText = transliteration.transliterate(inputText);
+        $('#outputText').val(transliteratedText);
+      });
+    });
+  </script>
+</body>
+</html>
