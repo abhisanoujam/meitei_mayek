@@ -1,66 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transliteration Tool</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <style>
-    .author-subheader {
-      font-size: 0.8em;
-      color: #888;
-      margin-top: 10px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meitei Mayek Transliteration Tool</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 2em;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .description {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #666;
+      /* Lighter text color for description */
+    }
+    .description.normal {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: #666;
+      /* Lighter text color for description */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .output {
+      margin-top: 20px;
+    }
+
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
-<script>
-
-    class Transliteration {
-      constructor() {}
-
-      transliterate(text) {
-        return text;
-      }
-    }
-
-</script>
-<div class="container">
-    <h1>Transliteration Tool</h1>
-    <p class="author-subheader">Author: Abhi Sanoujam</p>
-    <div class="row">
-        <div class="col s12">
-            <div class="input-field">
-                <textarea id="inputText" placeholder="Enter text to transliterate" rows="20"></textarea>
-                <label for="inputText">Text</label>
-            </div>
-        </div>
+  <header class="header">
+    <h1>Meitei Mayek Transliteration Tool</h1>
+  </header>
+  <div class="container">
+    <p class="description">This tool transliterates text from English letters to Meitei Mayek.
+      You can type in Manipuri using English characters, and the output is in <a
+        href="https://en.wikipedia.org/wiki/Meetei_Mayek_(Unicode_block)">unicode Meitei Mayek</a>.</p>
+    <p class="description normal">
+      You can type anything you want in the input box - give it a try! For example, try putting in your name to see how
+      cool it looks in Meitei Mayek!!
+    </p>
+    <label for="inputText">Input Text (type Manipuri using English letters, example as below):</label>
+    <textarea id="inputText" placeholder="Enter text to transliterate">sidi eisu meitei myek eeb heirni bu .</textarea>
+    <div class.output>
+      <label for="outputText">Output Text in Meitei Mayek:</label>
+      <textarea id="outputText" placeholder="Transliterated Text" readonly>ꯁꯤꯗꯤ ꯑꯩꯁꯨ ꯃꯩꯇꯩ ꯃꯌꯦꯛ ꯏꯕ ꯍꯩꯔꯅꯤ ꯕꯨ ꯫</textarea>
     </div>
-    <div class="row">
-        <div class="col s12 center-align">
-            <button class="btn waves-effect waves-light" id="transliterateBtn">Transliterate <i class="material-icons right">send</i></button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12">
-            <div class="input-field">
-                <textarea id="outputText" placeholder="Transliterated Text" disabled rows="20"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script>
-    $(document).ready(function() {
-      $('#transliterateBtn').click(function() {
-        const inputText = $('#inputText').val();
-        const transliteration = new Transliteration();
-        const transliteratedText = transliteration.transliterate(inputText);
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- See comment below -->
+  <!-- <script src="meitei_mayek_transliteration.js"></script> -->
+
+  <script>
+    // The below snippet is equivalent to adding the script directly, but adding random query param to avoid
+    // reloading issues during development and always fetch latest version.
+    const script = document.createElement('script');
+    const randomParam = Math.random().toString(36).substring(2, 15); // Generate a random string
+    script.src = `meitei_mayek_transliteration.js?v=${randomParam}`;
+    document.head.appendChild(script);
+  </script>
+  <script>
+    $(document).ready(function () {
+
+      $("#inputText").on('input keypress', function () {
+        const inputText = $(this).val();
+        const mmTransliterator = new MeiteiMayekTransliterator();
+        const transliteratedText = mmTransliterator.transliterate(inputText);
         $('#outputText').val(transliteratedText);
       });
+
+      $('#transliterateBtn').click(function () {
+        const inputText = $('#inputText').val();
+        const mmTransliterator = new MeiteiMayekTransliterator();
+        const transliteratedText = mmTransliterator.transliterate(inputText);
+        $('#outputText').val(transliteratedText);
+      });
+
     });
   </script>
 </body>
+
 </html>
