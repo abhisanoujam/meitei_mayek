@@ -313,7 +313,7 @@ class MeiteiMayekTransliterator {
 
 /** UNCOMMENT below to run the test locally using node js */
 /** Install node js, and run `node meitei_mayek_transliteration.js` */
-
+/*
 function test() {
     const engine = new MeiteiMayekTransliterator();
     const tests = {
@@ -370,5 +370,5 @@ function test() {
 }
 
 test();
-
+*/
 
