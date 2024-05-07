@@ -40,8 +40,10 @@ const MEITEI_MAYEK_PHONEMES = [
     { "phoneme": "t", "isVowel": false, "asVowel": "", "asConsonant": "ꯇ", "canBeLonsum": true, "asLonsum": "ꯠ" },
     { "phoneme": "th", "isVowel": false, "asVowel": "", "asConsonant": "ꯊ", "canBeLonsum": false, "asLonsum": "" },
     { "phoneme": "u", "isVowel": true, "asVowel": "\uABE8", "asConsonant": "ꯎ", "canBeLonsum": false, "asLonsum": "" },
+    { "phoneme": "v", "isVowel": false, "asVowel": "", "asConsonant": "ꯚ", "canBeLonsum": false, "asLonsum": "" },
     { "phoneme": "w", "isVowel": false, "asVowel": "", "asConsonant": "ꯋ", "canBeLonsum": false, "asLonsum": "" },
     { "phoneme": "y", "isVowel": false, "asVowel": "", "asConsonant": "ꯌ", "canBeLonsum": false, "asLonsum": "" },
+    { "phoneme": "z", "isVowel": false, "asVowel": "", "asConsonant": "ꯖ", "canBeLonsum": false, "asLonsum": "" },
     // add phoneme for 'cheikhei'/full-stop
     { "phoneme": ".", "isVowel": false, "asVowel": "", "asConsonant": "\uABEB", "canBeLonsum": false, "asLonsum": "" },
     // add phonemes for missing english letters Q and X
@@ -203,7 +205,11 @@ class MeiteiMayekTransliterator {
             const digraphPhoneme = MAPPER.mapToPhonemeOrNull(prev.phoneme, next);
             if (digraphPhoneme === null) {
                 // no match, use phoneme for current letter
-                const nextPhoneme = MAPPER.mapToPhonemeOrNull(next);
+                let nextPhoneme = MAPPER.mapToPhonemeOrNull(next);
+                if (nextPhoneme === null) {
+                    // this should not happen, but just in case pass-through as-is instead of failing
+                    nextPhoneme = new Phoneme(next, false, '', next);
+                } 
                 phonemes.push(nextPhoneme);
                 prev = nextPhoneme;
             } else {
@@ -307,7 +313,7 @@ class MeiteiMayekTransliterator {
 
 /** UNCOMMENT below to run the test locally using node js */
 /** Install node js, and run `node meitei_mayek_transliteration.js` */
-/*
+
 function test() {
     const engine = new MeiteiMayekTransliterator();
     const tests = {
@@ -337,8 +343,11 @@ function test() {
         'kng': 'ꯀꯪ',
         'kng gi': 'ꯀꯪ ꯒꯤ',
         '3218765425975': '꯳꯲꯱꯸꯷꯶꯵꯴꯲꯵꯹꯷꯵',
-        'se ei': 'ꯁꯦ ꯑꯩ',
-        'chatlge .': 'ꯆꯥꯠꯂꯒꯦ ꯫'
+        'se ei': 'ꯁꯦ ꯑꯩ', // test of end in vowel and start next with vowel
+        'chatlge .': 'ꯆꯥꯠꯂꯒꯦ ꯫', // test for consecutive lonsum
+        'ava ana yaudb oirsnu': 'ꯑꯚꯥ ꯑꯅꯥ ꯌꯥꯎꯗꯕ ꯑꯣꯏꯔꯁꯅꯨ', // test for v
+        'zebra se kri kouge': 'ꯖꯦꯕꯔꯥ ꯁꯦ ꯀꯔꯤ ꯀꯧꯒꯦ', // test for z
+        'kagz haibdi che ni': 'ꯀꯥꯒꯖ ꯍꯥꯏꯕꯗꯤ ꯆꯦ ꯅꯤ', // test for z
     };
     let passedCount = 0;
     let failedCount = 0;
@@ -361,5 +370,5 @@ function test() {
 }
 
 test();
-*/
+
 
