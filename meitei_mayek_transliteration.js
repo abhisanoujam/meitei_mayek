@@ -66,6 +66,37 @@ const MEITEI_MAYEK_NUMBERS = {
     '꯹': '9'
 };
 
+const MEITEI_MAYEK_APUN_MAYEK_RULES = [
+    // the following combinations of phonemes are combined with an APUN MAYEK
+    ["b", "r"],
+    // ["ch", "r"], can't think of example
+    ["dh", "r"],
+    ["dh", "y"],
+    ["f", "r"],
+    ["g", "r"],
+    ["g", "y"],
+    ["j", "r"],
+    ["j", "y"],
+    // ["k", "r"], violated in "kari" (what)
+    ["k", "w"],
+    ["k", "y"],
+    ["kh", "r"],
+    ["kh", "w"],
+    ["n", "y"],
+    // ["ng", "r"], can't think of example
+    ["p", "r"],
+    ["p", "y"],
+    ["ph", "r"],
+    ["s", "w"],
+    ["s", "y"],
+    ["sh", "w"],
+    ["sh", "y"],
+    ["t", "r"],
+    ["th", "r"],
+    // ["th", "w"], violated in "thwai"
+    ["v", "y"],
+];
+
 /**
  * In linguistics, a phoneme is the smallest unit of sound in a language that can distinguish one word from another.
  * A grapheme is the smallest functional unit of a writing system. It's a written symbol or a group of symbols that represents 
@@ -121,6 +152,11 @@ class Mapper {
             // initialize numbers as phonemes
             this.phonemes.set(value, new Phoneme(value, false, '', key, false, '', true));
         }
+        this.apunMayekPhonemes = new Set();
+        for (let i = 0; i < MEITEI_MAYEK_APUN_MAYEK_RULES. length; i++) {
+            const tuple = MEITEI_MAYEK_APUN_MAYEK_RULES[i];
+            this.apunMayekPhonemes.add(tuple[0] + '-' + tuple[1]);
+        }
     }
 
     mapToPhonemeOrNull(curr, next = '') {
@@ -129,6 +165,11 @@ class Mapper {
         }
         return null;
     }
+
+    isApunMayekPhonemesCombo(one, two) {
+        const key = one.phoneme + '-' + two.phoneme;
+        return this.apunMayekPhonemes.has(key);
+    }
 }
 
 
@@ -136,6 +177,7 @@ class Mapper {
 
 const MAPPER = new Mapper();
 const PHI = new Phoneme('');
+const APUN_MAYEK_AS_PHONEME = new Phoneme('\uABED', false, "", '\uABED');
 
 /**
  * Represents consonant-vowel-consonant state of the word.
@@ -209,7 +251,7 @@ class MeiteiMayekTransliterator {
                 if (nextPhoneme === null) {
                     // this should not happen, but just in case pass-through as-is instead of failing
                     nextPhoneme = new Phoneme(next, false, '', next);
-                } 
+                }
                 phonemes.push(nextPhoneme);
                 prev = nextPhoneme;
             } else {
@@ -269,6 +311,12 @@ class MeiteiMayekTransliterator {
                         state = CVCState.VOWEL;
                         prev = next;
                     } else {
+
+                        // check for apun mayek phonemes, and add if apun mayek necessary
+                        if (MAPPER.isApunMayekPhonemesCombo(prev.phoneme, curr)) {
+                            output.push(new PhonemeOutput(APUN_MAYEK_AS_PHONEME, OutputMode.CONSONANT));
+                        }
+
                         // use as lonsum greedily if possible. But no consecutive lonsums
                         const next = new PhonemeOutput(curr,
                             curr.canBeLonsum ?
@@ -311,16 +359,15 @@ class MeiteiMayekTransliterator {
 
 
 
-/** UNCOMMENT below to run the test locally using node js */
-/** Install node js, and run `node meitei_mayek_transliteration.js` */
-/*
+//// TEST CODE
+
 function test() {
     const engine = new MeiteiMayekTransliterator();
     const tests = {
         'angangba machuse 1adum phjei': 'ꯑꯉꯥꯡꯕꯥ ꯃꯥꯆꯨꯁꯦ ꯱ꯑꯗꯨꯝ ꯐꯖꯩ',
         'aingbi': 'ꯑꯏꯪꯕꯤ',
         'eikhoigi': 'ꯑꯩꯈꯣꯏꯒꯤ',
-        'khwaidagi': 'ꯈꯋꯥꯏꯗꯥꯒꯤ',
+        'khwaidagi': 'ꯈ꯭ꯋꯥꯏꯗꯥꯒꯤ',
         'adubu': 'ꯑꯗꯨꯕꯨ',
         'akhangba': 'ꯑꯈꯥꯡꯕꯥ',
         'chao': 'ꯆꯥꯑꯣ',
@@ -332,7 +379,7 @@ function test() {
         'npsnb': 'ꯅꯞꯁꯟꯕ',
         'npira': 'ꯅꯄꯤꯔꯥ',
         'queen': 'ꯀ꯭ꯋꯨꯏꯟ',
-        'xmas tree': 'ꯀ꯭ꯁꯃꯥꯁ ꯇꯔꯤ',
+        'xmas tree': 'ꯀ꯭ꯁꯃꯥꯁ ꯇ꯭ꯔꯤ',
         'apex': 'ꯑꯄꯦꯀ꯭ꯁ',
         'kung': 'ꯀꯨꯡ',
         'kangi': 'ꯀꯥꯉꯤ',
@@ -346,8 +393,12 @@ function test() {
         'se ei': 'ꯁꯦ ꯑꯩ', // test of end in vowel and start next with vowel
         'chatlge .': 'ꯆꯥꯠꯂꯒꯦ ꯫', // test for consecutive lonsum
         'ava ana yaudb oirsnu': 'ꯑꯚꯥ ꯑꯅꯥ ꯌꯥꯎꯗꯕ ꯑꯣꯏꯔꯁꯅꯨ', // test for v
-        'zebra se kri kouge': 'ꯖꯦꯕꯔꯥ ꯁꯦ ꯀꯔꯤ ꯀꯧꯒꯦ', // test for z
+        'zebra se kri kouge': 'ꯖꯦꯕ꯭ꯔꯥ ꯁꯦ ꯀꯔꯤ ꯀꯧꯒꯦ', // test for z and apun mayek
         'kagz haibdi che ni': 'ꯀꯥꯒꯖ ꯍꯥꯏꯕꯗꯤ ꯆꯦ ꯅꯤ', // test for z
+        'sandhya': 'ꯁꯥꯟꯙ꯭ꯌꯥ', // test for apun mayek
+        'khwairambnd': 'ꯈ꯭ꯋꯥꯏꯔꯥꯝꯕꯟꯗ', // test for apun mayek
+        'maangkhre': 'ꯃꯥꯡꯈ꯭ꯔꯦ', // test for apun mayek
+        'kwakeithel': 'ꯀ꯭ꯋꯥꯀꯩꯊꯦꯜ'
     };
     let passedCount = 0;
     let failedCount = 0;
@@ -369,6 +420,9 @@ function test() {
 
 }
 
-test();
-*/
+/** UNCOMMENT below to run the test locally using node js */
+/** Install node js, and run `node meitei_mayek_transliteration.js` */
+
+// test();
+
 
